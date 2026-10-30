@@ -40,7 +40,7 @@
         <div class="grid">
             <div class="form-group" style="grid-column: span 2;">
                 <label for="endpoint">Endpoint URL (Servidor Flask/Python):</label>
-                <input type="text" id="endpoint" value="http://localhost:5000/print">
+                <input type="text" id="endpoint" value="http://localhost:5050/print">
             </div>
             <div class="form-group">
                 <label for="printer_name">Nombre Impresora (`printer_name`):</label>
@@ -243,7 +243,7 @@
             } else if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
                 errorMessage = 'No se pudo conectar al servidor de impresión (Failed to fetch).\n' +
                                '• Asegúrate de ejecutar tu servidor de impresión local (TeraPrint.exe).\n' +
-                               '• Comprueba que la URL contenga el puerto correcto (ej: http://localhost:5000/print).\n' +
+                               '• Comprueba que la URL contenga el puerto correcto (ej: http://localhost:5050/print).\n' +
                                '• Revisa si flask_cors está habilitado en tu script de Python.';
             } else {
                 errorMessage = error.message;

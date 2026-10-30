@@ -19,7 +19,7 @@ hiddenimports = [
 	'markupsafe',
 	'itsdangerous',
 	'click',
-	'blinker'
+	'blinker',
 	'colorama'
 ]
 
