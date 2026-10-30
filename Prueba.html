@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba de Impresión - TeraPrint CLI</title>
+    <style>
+        body { font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background: #f0f2f5; color: #333; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        h2, h3 { margin-top: 0; color: #1a56db; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        .form-group { display: flex; flex-direction: column; }
+        label { font-size: 12px; font-weight: bold; margin-bottom: 4px; color: #495057; text-transform: uppercase; }
+        input, select { padding: 8px 10px; border: 1px solid #ced4da; border-radius: 4px; font-size: 14px; }
+        input:focus, select:focus { border-color: #0d6efd; outline: none; }
+        .section-box { background: #f8f9fa; border: 1px solid #e9ecef; padding: 15px; border-radius: 6px; margin-bottom: 20px; }
+        .btn-print { background: #0d6efd; color: white; border: none; padding: 12px 24px; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; display: inline-flex; align-items: center; gap: 10px; transition: background 0.2s; }
+        .btn-print:hover { background: #0b5ed7; }
+        .btn-print:disabled { background: #6c757d; cursor: not-allowed; }
+        .alert { padding: 12px; border-radius: 4px; margin-bottom: 15px; display: none; font-size: 14px; white-space: pre-wrap; }
+        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .spinner { border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top: 3px solid #ffffff; width: 18px; height: 18px; animation: spin 1s linear infinite; display: none; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        pre { background: #212529; color: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Prueba de Impresión (Replicando Laravel Livewire)</h2>
+
+    <!-- Mensajes de Estado -->
+    <div id="alertSuccess" class="alert alert-success"></div>
+    <div id="alertError" class="alert alert-error"></div>
+
+    <!-- Configuración del Servidor e Impresora -->
+    <div class="section-box" style="background: #e8f0fe; border-color: #c2e7ff;">
+        <h3>1. Configuración de Servicio e Impresora (`config`)</h3>
+        <div class="grid">
+            <div class="form-group" style="grid-column: span 2;">
+                <label for="endpoint">Endpoint URL (Servidor Flask/Python):</label>
+                <input type="text" id="endpoint" value="http://localhost:5000/print">
+            </div>
+            <div class="form-group">
+                <label for="printer_name">Nombre Impresora (`printer_name`):</label>
+                <input type="text" id="printer_name" value="Zebra_Printer">
+            </div>
+            <div class="form-group">
+                <label for="host">Host / IP (`host` / `ip`):</label>
+                <input type="text" id="host" value="192.168.1.100">
+            </div>
+            <div class="form-group">
+                <label for="port">Puerto (`port`):</label>
+                <input type="number" id="port" value="9100">
+            </div>
+        </div>
+    </div>
+
+    <!-- Datos de la Etiqueta (lines) -->
+    <div class="section-box">
+        <h3>2. Datos del Documento / Etiqueta (`lines`)</h3>
+        
+        <div class="grid">
+            <div class="form-group">
+                <label for="correlativo">Correlativo:</label>
+                <input type="text" id="correlativo" value="105/2026">
+            </div>
+            <div class="form-group">
+                <label for="farmacia">Nombre Farmacia:</label>
+                <input type="text" id="farmacia" value="FARMACIA CENTRAL">
+            </div>
+            <div class="form-group">
+                <label for="numero_farmacia">Teléfono Farmacia:</label>
+                <input type="text" id="numero_farmacia" value="+56912345678">
+            </div>
+            <div class="form-group">
+                <label for="direccion_farmacia">Dirección Farmacia:</label>
+                <input type="text" id="direccion_farmacia" value="AV. PRINCIPAL #123">
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="form-group">
+                <label for="nombre">Nombre Paciente:</label>
+                <input type="text" id="nombre" value="JUAN PEREZ GONZALEZ">
+            </div>
+            <div class="form-group">
+                <label for="rut">RUT Paciente:</label>
+                <input type="text" id="rut" value="12345678-9">
+            </div>
+            <div class="form-group">
+                <label for="dci">DCI / Producto:</label>
+                <input type="text" id="dci" value="PARACETAMOL">
+            </div>
+            <div class="form-group">
+                <label for="forma">Forma Farmacéutica:</label>
+                <input type="text" id="forma" value="COMPRIMIDO">
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="form-group">
+                <label for="via">Vía Administración:</label>
+                <input type="text" id="via" value="ORAL">
+            </div>
+            <div class="form-group">
+                <label for="dosis">Dosificación:</label>
+                <input type="text" id="dosis" value="1 COMPRIMIDO CADA 8 HORAS">
+            </div>
+            <div class="form-group">
+                <label for="cantidad">Cantidad:</label>
+                <input type="text" id="cantidad" value="20">
+            </div>
+            <div class="form-group">
+                <label for="registro">Reg. Sanitario:</label>
+                <input type="text" id="registro" value="F-12345/20">
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="form-group">
+                <label for="lote">Lote / Serie:</label>
+                <input type="text" id="lote" value="L89452">
+            </div>
+            <div class="form-group">
+                <label for="vence">Fecha Vencimiento:</label>
+                <input type="date" id="vence" value="2027-12-31">
+            </div>
+        </div>
+    </div>
+
+    <!-- Vista previa del JSON -->
+    <div style="margin-bottom: 20px;">
+        <label>JSON que se enviará en el Body:</label>
+        <pre id="jsonPreview"></pre>
+    </div>
+
+    <!-- Botón de Envío -->
+    <button id="btnPrint" class="btn-print" onclick="sendPrintRequest()">
+        <div id="spinner" class="spinner"></div>
+        <span id="btnText">ENVIAR A IMPRESORA</span>
+    </button>
+</div>
+
+<script>
+    function buildPayload() {
+        const printerName = document.getElementById('printer_name').value;
+        const hostIp = document.getElementById('host').value;
+        const portNumber = parseInt(document.getElementById('port').value) || 9100;
+        const dosisValue = document.getElementById('dosis').value;
+
+        return {
+            lines: [{
+                correlativo: document.getElementById('correlativo').value,
+                farmacia: document.getElementById('farmacia').value,
+                numero_farmacia: document.getElementById('numero_farmacia').value,
+                direccion_farmacia: document.getElementById('direccion_farmacia').value,
+                nombre: document.getElementById('nombre').value,
+                rut: document.getElementById('rut').value,
+                dci: document.getElementById('dci').value,
+                forma: document.getElementById('forma').value,
+                via: document.getElementById('via').value,
+                dosis: dosisValue,
+                cantidad: document.getElementById('cantidad').value,
+                registro: document.getElementById('registro').value,
+                lote: document.getElementById('lote').value,
+                vence: document.getElementById('vence').value
+            }],
+            dosificaciones: [dosisValue],
+            config: {
+                printer_name: printerName,
+                host: hostIp,
+                ip: hostIp,
+                port: portNumber
+            }
+        };
+    }
+
+    function updateJsonPreview() {
+        document.getElementById('jsonPreview').innerText = JSON.stringify(buildPayload(), null, 2);
+    }
+
+    // Registrar eventos para actualizar la vista previa en tiempo real
+    document.querySelectorAll('input, select').forEach(element => {
+        element.addEventListener('input', updateJsonPreview);
+        element.addEventListener('change', updateJsonPreview);
+    });
+
+    async function sendPrintRequest() {
+        const endpoint = document.getElementById('endpoint').value.trim();
+        const alertSuccess = document.getElementById('alertSuccess');
+        const alertError = document.getElementById('alertError');
+        const btnPrint = document.getElementById('btnPrint');
+        const spinner = document.getElementById('spinner');
+        const btnText = document.getElementById('btnText');
+
+        alertSuccess.style.display = 'none';
+        alertError.style.display = 'none';
+
+        if (!endpoint) {
+            showError('Por favor ingresa la URL del servidor de impresión.');
+            return;
+        }
+
+        const payload = buildPayload();
+
+        btnPrint.disabled = true;
+        spinner.style.display = 'block';
+        btnText.innerText = 'ENVIANDO...';
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+        try {
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload),
+                signal: controller.signal
+            }).finally(() => clearTimeout(timeoutId));
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Error HTTP ${response.status}: ${errorText}`);
+            }
+
+            const responseData = await response.json();
+
+            if (responseData.success === false) {
+                throw new Error(responseData.message || 'Error reportado por el servidor de impresión.');
+            }
+
+            showSuccess('¡Documento enviado a la impresora correctamente!\nRespuesta: ' + JSON.stringify(responseData));
+
+        } catch (error) {
+            let errorMessage = '';
+
+            if (error.name === 'AbortError') {
+                errorMessage = 'Tiempo de espera agotado (Timeout de 5s). Verifica que tu ejecutable Flask/Python esté corriendo.';
+            } else if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+                errorMessage = 'No se pudo conectar al servidor de impresión (Failed to fetch).\n' +
+                               '• Asegúrate de ejecutar tu servidor de impresión local (TeraPrint.exe).\n' +
+                               '• Comprueba que la URL contenga el puerto correcto (ej: http://localhost:5000/print).\n' +
+                               '• Revisa si flask_cors está habilitado en tu script de Python.';
+            } else {
+                errorMessage = error.message;
+            }
+
+            showError(errorMessage);
+        } finally {
+            btnPrint.disabled = false;
+            spinner.style.display = 'none';
+            btnText.innerText = 'ENVIAR A IMPRESORA';
+        }
+    }
+
+    function showSuccess(msg) {
+        const el = document.getElementById('alertSuccess');
+        el.innerText = msg;
+        el.style.display = 'block';
+    }
+
+    function showError(msg) {
+        const el = document.getElementById('alertError');
+        el.innerText = msg;
+        el.style.display = 'block';
+    }
+
+    // Inicializar vista previa
+    updateJsonPreview();
+</script>
+
+</body>
+</html>

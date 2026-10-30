@@ -1,0 +1,11 @@
+pywin32
+rut-chile
+flask
+flask-cors
+jinja2
+werkzeug
+markupsafe
+itsdangerous
+click
+blinker
+colorama
