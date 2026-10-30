@@ -74,7 +74,7 @@ def get_zpl(dosificacion, nombre, rut, dci, forma, via, dosis, cantidad, correla
 ^FT441,239^A0I,17,16^FH\\^FDNOMBRE PACIENTE^FS
 ^FT158,239^A0I,17,16^FH\\^FDRUT^FS
 ^FT186,297^A0I,23,21^FH\\^FD{correlativo}^FS
-^FT442,51^A0I,17,14^FH\\^FD{farmacia}. {numero_farmacia}. {direccion_farmacia} 502.^FS
+^FT442,51^A0I,17,14^FH\\^FD{farmacia}. {numero_farmacia}. {direccion_farmacia}.^FS
 ^FT398,36^A0I,14,12^FB349,1,0,C^FH\\^FDPara mayor informaci\\A2n, consulte a su prescriptor o Q. Farmac\\82utico. ^FS
 ^FT398,19^A0I,14,12^FB349,1,0,C^FH\\^FDVisite www.ispch.cl y www.minsal.cl^FS
 ^FO173,259^GB271,0,3^FS
